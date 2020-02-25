@@ -463,6 +463,9 @@ api.add_resource(SF_Contact, '/contact')
 api.add_resource(NexmoWhatsAppSendMessage, '/sendwhatsapp')
 api.add_resource(NexmoWhatsAppReceiveMessage, '/receivewhatsappmessage')
 api.add_resource(NexmoWhatsAppReceiveStatus, '/receivewhatsappstatus')
+@app.route('/')
+def index():
+	return 'OK', 200
 
 def main():
 	# con = SFConnection()
