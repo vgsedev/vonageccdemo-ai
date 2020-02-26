@@ -248,7 +248,7 @@ class SFConnection (object):
 		query = """select order__c.name, 
 			contact__r.name, 
 			contact__r.id,
-			order__c.order_status__c, 
+			order__c.status__c, 
 			order__c.delivery_date__c
 			from order__c 
 			where contact__r.phone like '%%%s' 
@@ -272,7 +272,7 @@ class SFConnection (object):
 		query = """select order__c.name, 
 			contact__r.name, 
 			contact__r.id,
-			order__c.order_status__c, 
+			order__c.status__c, 
 			order__c.delivery_date__c
 			from order__c 
 			where (contact__r.phone like '%%%s' 
