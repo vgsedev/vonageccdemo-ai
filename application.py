@@ -297,7 +297,7 @@ class SFConnection (object):
 			'Content-Type': 'application/json'}
 		r = requests.patch(self.rest_url + '/sobjects/Contact/' + contact_id, 
 			headers=headers,
-			json={'Current_Order__c': order_number})
+			json={'Order_Pop__c': order_number})
 		if r.status_code != requests.codes.ok:
 			r.raise_for_status()
 
