@@ -408,7 +408,7 @@ class SF_Order (Resource):
 			return jsonify(overai_response)
 		else:
 			app.logger.warning('Could not find order for number ', order_number)
-			overai_response['ForceIntent'] = {'IntentName': 'order_not_found'}
+			overai_response['ForceIntent'] = {'IntentName': 'order_number'}
 			overai_response['Response'] = {'IntroSpeakOut': 'Sorry, I could not find that order. Please try again.'}
 			return jsonify(overai_response)
 		
