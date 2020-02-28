@@ -410,6 +410,7 @@ class SF_Order (Resource):
 			return jsonify(overai_response)
 		else:
 			app.logger.warning('Could not find order for number %s', order_number)
+			con.update_contact_for_order(contact_id, '')
 			overai_response['ForceIntent'] = {'IntentName': 'order_not_found'}
 			# overai_response['Response'] = {'IntroSpeakOut': 'Sorry, I could not find that order. Please try again.'}
 			# overai_response['SessionParameters'] = [
