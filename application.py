@@ -375,6 +375,8 @@ class SF_Order (Resource):
 
 		order_number = req.get_parameter('ORDER_NUMBER')
 
+		app.logger.info('Received request for order number %s', order_number)
+
 		if order_number:
 			last_order = con.get_order_by_number(caller_id, order_number)
 		else:
