@@ -57,7 +57,7 @@ class NexmoWhatsAppConnection (object):
 		con.authenticate()
 		contact_response = con.get_contact_for_phone(caller_id)
 
-		pprint(contact_response)
+		# pprint(contact_response)
 
 		if not contact_response: raise Exception('No contact found')
 		contact = contact_response['records'][0]
@@ -89,7 +89,7 @@ class NexmoWhatsAppConnection (object):
    			}
    		}
 		
-		pprint(msg)
+		# pprint(msg)
 
 		r = requests.post(self.sandbox_url, 
    			headers={'Content-Type': 'application/json', 
@@ -149,7 +149,7 @@ class NexmoWhatsAppConnection (object):
 
 	def receive_answer(self, req):
 		app.logger.debug('In receive_answer')
-		pprint(req)
+		# pprint(req)
 
 		# If we receive an answer from a client, we check if there are any pending messages.
 		from_phone = req['from']['number']
@@ -168,7 +168,7 @@ class NexmoWhatsAppConnection (object):
 
 	def receive_status(self, req):
 		app.logger.debug('in receive_status')
-		pprint(req)
+		# pprint(req)
 
 		"""
 		if req['status'] == 'delivered':
@@ -186,7 +186,7 @@ class NexmoWhatsAppConnection (object):
 class NexmoWhatsAppSendMessage (Resource):
 	def post(self):
 		app.logger.debug('In NexmoWhatsAppSendMessage.post')
-		pprint(request.get_json())
+		# pprint(request.get_json())
 		req = OverAiRequest(request.get_json())
 		nexmo_con = NexmoWhatsAppConnection()
 		nexmo_con.send_message(
