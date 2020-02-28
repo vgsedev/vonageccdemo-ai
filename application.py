@@ -396,7 +396,7 @@ class SF_Order (Resource):
 		     	'Value': last_order_record['Delivery_Date__c']},
 				{'Name': 'ORDER_STATUS',
 			 	'Type': '@sys.any',
-			 	'Value': last_order_record['Order_Status__c']},
+			 	'Value': last_order_record['Status__c']},
 				]
 
 			# Update associated contact with order_number for potential later screen pops
@@ -468,17 +468,17 @@ def index():
 	return 'OK', 200
 
 def main():
-	# con = SFConnection()
-	# con.authenticate()
+	con = SFConnection()
+	con.authenticate()
 	# con.update_whatsapp_mtm_date('491636115432', datetime.utcnow())
 
 	# print('token ' + con.get_access_token() + "\n")
 
-	# r = con.get_last_order_by_phone('491636115432')
+	r = con.get_contact_for_phone('491636115432')
 
-	# pprint(r)
+	pprint(r)
 	# pprint(vars(r))
-	pass
+	
 
 if __name__ == '__main__':
 	# port = int(os.environ.get('PORT', 5000))
