@@ -192,7 +192,8 @@ class NexmoWhatsAppSendMessage (Resource):
 		nexmo_con.send_message(
 			req.get_parameter('WHATSAPP_RECIPIENT'), 
 			req.get_parameter('WHATSAPP_MSG'))
-		return jsonify({"ForceIntent": {"IntentName": "end_call"}})
+		# return jsonify({"ForceIntent": {"IntentName": "end_call"}})
+		return jsonify({})
 
 class NexmoWhatsAppReceiveMessage (Resource):
 	def post(self):
