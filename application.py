@@ -188,6 +188,7 @@ class NexmoWhatsAppSendMessage (Resource):
 		app.logger.debug('In NexmoWhatsAppSendMessage.post')
 		# pprint(request.get_json())
 		req = OverAiRequest(request.get_json())
+		pprint(req)
 		nexmo_con = NexmoWhatsAppConnection()
 		nexmo_con.send_message(
 			req.get_parameter('WHATSAPP_RECIPIENT'), 
