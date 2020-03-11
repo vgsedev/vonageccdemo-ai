@@ -532,7 +532,7 @@ class SF_AIContext (Resource):
 		con = SFConnection()
 		con.authenticate()
 
-		contacts = self.get_contact_for_phone(req.caller_id)
+		contacts = con.get_contact_for_phone(req.caller_id)
 		if not contacts: raise Exception('No contact found for phone %s', contact_phone)
 		contact_id = contacts['records'][0]['Id']
 		con.update_contact_for_ai_context(contact_id, req.get_parameter('AI_CONTEXT'))
