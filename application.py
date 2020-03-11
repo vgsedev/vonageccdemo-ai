@@ -186,7 +186,7 @@ class NexmoWhatsAppConnection (object):
 class NexmoWhatsAppSendMessageOrder (Resource):
 
 	def post(self):
-		app.logger.debug('In NexmoWhatsAppSendMessage.post')
+		app.logger.debug('In NexmoWhatsAppSendMessageOrder.post')
 		pprint(request.get_json())
 		req = OverAiRequest(request.get_json())
 		nexmo_con = NexmoWhatsAppConnection()
@@ -194,6 +194,47 @@ class NexmoWhatsAppSendMessageOrder (Resource):
 			req.get_parameter('WHATSAPP_RECIPIENT'), 
 			req.get_parameter('WHATSAPP_MSG'))
 		return jsonify({"ForceIntent": {"IntentName": "end_call"}})
+		# return jsonify({'Result': {'IntroSpeakOut': 'Ok, the Whatsapp message is on its way to you.'}})
+
+class NexmoWhatsAppSendMessageProduct (Resource):
+
+	messages = {
+		'ConversationAnalyzer': """Thank you very much for your interest in Conversation Analyzer. If you'd
+		like to learn more please visit:
+
+		https://www.newvoicemedia.com/en-us/resources/conversation-analyzer""",
+		
+		'SmartNumbers': """We're happy you'd like to know more about our Smart Numbers capability. Please 
+		check out
+
+		https://www.vonage.com/business/perspectives/vonage-number-programmability-leap-forward-business-communication/
+
+		to learn more.""",
+
+		'SinglePaneOfGlass': """Thank you very much for calling us regarding our Single Pane of Glass offering. Please
+		consult
+
+		https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy
+
+		to learn more about it."""
+	}
+
+	def post(self):
+		app.logger.debug('In NexmoWhatsAppSendMessageProduct.post')
+		pprint(request.get_json())
+		req = OverAiRequest(request.get_json())
+
+		try: 
+			whatsapp_message = self.messages[req.get_parameter('PRODUCT')]
+			app.logger.info('Found Whatsapp Message text for %s' % req.get_parameter('PRODUCT'))
+		except KeyError e:
+			whatsapp_message = 'Error, no such product found'
+
+		nexmo_con = NexmoWhatsAppConnection()
+		nexmo_con.send_message(
+			req.get_parameter('WHATSAPP_RECIPIENT'), 
+			whatsapp_message)
+		return jsonify({"ForceIntent": {"IntentName": "product_confirm_route"}})
 		# return jsonify({'Result': {'IntroSpeakOut': 'Ok, the Whatsapp message is on its way to you.'}})
 
 class NexmoWhatsAppReceiveMessage (Resource):
@@ -477,6 +518,7 @@ api = Api(app)
 api.add_resource(SF_Order, '/orderstatus')
 api.add_resource(SF_Contact, '/contact')
 api.add_resource(NexmoWhatsAppSendMessageOrder, '/sendwhatsapp/order')
+api.add_resource(NexmoWhatsAppSendMessageProduct, '/sendwhatsapp/product')
 api.add_resource(NexmoWhatsAppReceiveMessage, '/receivewhatsappmessage')
 api.add_resource(NexmoWhatsAppReceiveStatus, '/receivewhatsappstatus')
 @app.route('/')
