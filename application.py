@@ -227,7 +227,7 @@ class NexmoWhatsAppSendMessageProduct (Resource):
 		try: 
 			whatsapp_message = self.messages[req.get_parameter('PRODUCT')]
 			app.logger.info('Found Whatsapp Message text for %s' % req.get_parameter('PRODUCT'))
-		except KeyError e:
+		except KeyError:
 			whatsapp_message = 'Error, no such product found'
 
 		nexmo_con = NexmoWhatsAppConnection()
