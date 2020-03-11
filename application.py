@@ -199,20 +199,17 @@ class NexmoWhatsAppSendMessageOrder (Resource):
 class NexmoWhatsAppSendMessageProduct (Resource):
 
 	messages = {
-		'ConversationAnalyzer': """Thank you very much for your interest in Conversation Analyzer. If you'd
-		like to learn more please visit:
+		'Conversation Analyzer': """Thank you very much for your interest in Conversation Analyzer. If you'd like to learn more please visit:
 
 		https://www.newvoicemedia.com/en-us/resources/conversation-analyzer""",
 		
-		'SmartNumbers': """We're happy you'd like to know more about our Smart Numbers capability. Please 
-		check out
+		'Smart Numbers': """We're happy you'd like to know more about our Smart Numbers capability. Please check out
 
 		https://www.vonage.com/business/perspectives/vonage-number-programmability-leap-forward-business-communication/
 
 		to learn more.""",
 
-		'SinglePaneOfGlass': """Thank you very much for calling us regarding our Single Pane of Glass offering. Please
-		consult
+		'Single Pane Of Glass': """Thank you very much for calling us regarding our Single Pane of Glass offering. Please consult
 
 		https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy
 
@@ -525,7 +522,7 @@ class SF_AIContext (Resource):
 		req = OverAiRequest(request.get_json())
 
 		ai_context = req.get_parameter('AI_CONTEXT')
-		app.logger.info('SF_AIContext.post for %s with context %s' % (req.caller_id, ai_context))
+		app.logger.warning('SF_AIContext.post for %s with context %s' % (req.caller_id, ai_context))
 
 		# pprint(req)
 
@@ -535,7 +532,7 @@ class SF_AIContext (Resource):
 		contacts = con.get_contact_for_phone(req.caller_id)
 		if not contacts: raise Exception('No contact found for phone %s', contact_phone)
 		contact_id = contacts['records'][0]['Id']
-		con.update_contact_for_ai_context(contact_id, req.get_parameter('AI_CONTEXT'))
+		con.update_contact_for_ai_context(contact_id, ai_context)
 		# Always route after updating the context. The context will be displayed in ContactPad
 		return jsonify({'ForceIntent': {'IntentName': 'route_call'}})
 
