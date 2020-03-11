@@ -183,7 +183,8 @@ class NexmoWhatsAppConnection (object):
 				self.send_message_no_mtm_check(msg['to'], msg['message'])
 		"""
 
-class NexmoWhatsAppSendMessage (Resource):
+class NexmoWhatsAppSendMessageOrder (Resource):
+
 	def post(self):
 		app.logger.debug('In NexmoWhatsAppSendMessage.post')
 		pprint(request.get_json())
@@ -475,7 +476,7 @@ application = app = Flask(__name__)
 api = Api(app)
 api.add_resource(SF_Order, '/orderstatus')
 api.add_resource(SF_Contact, '/contact')
-api.add_resource(NexmoWhatsAppSendMessage, '/sendwhatsapp')
+api.add_resource(NexmoWhatsAppSendMessageOrder, '/sendwhatsapp/order')
 api.add_resource(NexmoWhatsAppReceiveMessage, '/receivewhatsappmessage')
 api.add_resource(NexmoWhatsAppReceiveStatus, '/receivewhatsappstatus')
 @app.route('/')
