@@ -344,6 +344,15 @@ class SFConnection (object):
 		if r.status_code != requests.codes.ok:
 			r.raise_for_status()
 
+	def update_contact_for_ai_context(self, contact_id, ai_context):
+		headers = {'Authorization': 'Bearer ' + self.get_access_token(),
+			'Content-Type': 'application/json'}
+		r = requests.patch(self.rest_url + '/sobjects/Contact/' + contact_id, 
+			headers=headers,
+			json={'Vonage_AI_Context__c': ai_context})
+		if r.status_code != requests.codes.ok:
+			r.raise_for_status()
+
 	def get_contact_for_phone(self, phone):
 		query = """select  
 			id,
@@ -511,7 +520,24 @@ class SF_Contact (Resource):
 
 		return jsonify(overai_response)
 
-# global_message_storage = MessageStorage()
+class SF_AIContext (Resource):
+	def post(self):
+		req = OverAiRequest(request.get_json())
+
+		ai_context = req.get_parameter('AI_CONTEXT')
+		app.logger.info('SF_AIContext.post for %s with context %s' % (req.caller_id, ai_context))
+
+		# pprint(req)
+
+		con = SFConnection()
+		con.authenticate()
+
+		contacts = self.get_contact_for_phone(req.caller_id)
+		if not contacts: raise Exception('No contact found for phone %s', contact_phone)
+		contact_id = contacts['records'][0]['Id']
+		con.update_contact_for_ai_context(contact_id, req.get_parameter('AI_CONTEXT'))
+		# Always route after updating the context. The context will be displayed in ContactPad
+		return jsonify({'ForceIntent': {'IntentName': 'route_call'}})
 
 application = app = Flask(__name__)
 api = Api(app)
@@ -521,6 +547,7 @@ api.add_resource(NexmoWhatsAppSendMessageOrder, '/sendwhatsapp/order')
 api.add_resource(NexmoWhatsAppSendMessageProduct, '/sendwhatsapp/product')
 api.add_resource(NexmoWhatsAppReceiveMessage, '/receivewhatsappmessage')
 api.add_resource(NexmoWhatsAppReceiveStatus, '/receivewhatsappstatus')
+api.add_resource(SF_AIContext, '/updatecontext')
 @app.route('/')
 def index():
 	return 'OK', 200
