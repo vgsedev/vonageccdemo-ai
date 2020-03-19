@@ -149,7 +149,9 @@ class NexmoWhatsAppConnection (object):
 
 	def receive_answer(self, req):
 		app.logger.debug('In receive_answer')
-		# pprint(req)
+		print('In receive_answer for whatsapp')
+
+		pprint(req)
 
 		# If we receive an answer from a client, we check if there are any pending messages.
 		from_phone = req['from']['number']
@@ -168,7 +170,8 @@ class NexmoWhatsAppConnection (object):
 
 	def receive_status(self, req):
 		app.logger.debug('in receive_status')
-		# pprint(req)
+		print('In receive status for whatsapp')
+		pprint(req)
 
 		"""
 		if req['status'] == 'delivered':
