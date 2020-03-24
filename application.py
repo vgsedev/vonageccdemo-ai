@@ -480,7 +480,7 @@ class SF_Contact (Resource):
 	def post(self):
 		req = OverAiRequest(request.get_json())
 
-		# pprint(req)
+		pprint(req)
 
 		con = SFConnection()
 		con.authenticate()
