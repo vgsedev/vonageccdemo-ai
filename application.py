@@ -412,6 +412,9 @@ class OverAiRequest (object):
 		except (KeyError, StopIteration):
 			return None
 
+	def get_language(self):
+		return self.webhook_request['Language']
+
 class SF_Order (Resource):
 
 	def post(self):
@@ -511,9 +514,16 @@ class SF_Contact (Resource):
 				 'Type': '@sys.phone-number',
 				 'Value': contact['OtherPhone']}
 			]
-			overai_response['Result'] = {
-				'IntroSpeakOut': """Welcome back %s. Is this about your most recent order? Or an earlier order?""" % (contact['FirstName'], )
-			}
+			if req.get_language() == 'de':
+				app.logger.warning('German Language detected')
+				overai_response['Result'] = {
+					'IntroSpeakOut': """Willkommen zurück %s. Geht es um ihre letzte Bestellung? Oder eine ältere Bestellung?""" % (contact['FirstName'], )
+				}
+			else:	
+				app.logger.warning('Requested Language is %s', (req.get_language()))
+				overai_response['Result'] = {
+					'IntroSpeakOut': """Welcome back %s. Is this about your most recent order? Or an earlier order?""" % (contact['FirstName'], )
+				}
 
 		# pprint(overai_response)
 
