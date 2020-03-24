@@ -514,7 +514,7 @@ class SF_Contact (Resource):
 				 'Type': '@sys.phone-number',
 				 'Value': contact['OtherPhone']}
 			]
-			if req.get_language() == 'de':
+			if req.get_language() == 'de-DE':
 				app.logger.warning('German Language detected')
 				overai_response['Result'] = {
 					'IntroSpeakOut': """Willkommen zurück %s. Geht es um ihre letzte Bestellung? Oder eine ältere Bestellung?""" % (contact['FirstName'], )
