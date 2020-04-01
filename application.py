@@ -476,7 +476,7 @@ class SF_Order (Resource):
 			timer_start_sf = timer()
 			con.update_contact_for_order(contact_id, last_order_record['Name'])
 			timer_end_sf = timer()
-			print('SF_Order.post update_contact took ', timer_end-timer_start, ' secs')
+			print('SF_Order.post update_contact took ', timer_end_sf-timer_start_sf, ' secs')
 
 			# pprint(overai_response)
 
