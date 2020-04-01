@@ -204,33 +204,33 @@ class NexmoWhatsAppSendMessageOrder (Resource):
 class NexmoWhatsAppSendMessageProduct (Resource):
 
 	messages = {
-		'Conversation Analyzer': """Thank you very much for your interest in Conversation Analyzer. If you'd like to learn more please visit:
-
-		https://www.newvoicemedia.com/en-us/resources/conversation-analyzer""",
-		
-		'Smart Numbers': """We're happy you'd like to know more about our Smart Numbers capability. Please check out
-
-		https://www.vonage.com/business/perspectives/vonage-number-programmability-leap-forward-business-communication/
-
-		to learn more.""",
-
-		'Single Pane Of Glass': """Thank you very much for calling us regarding our Single Pane of Glass offering. Please consult
-
-		https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy
-
-		to learn more about it."""
+		'en-US': { 
+			'conversation analyzer': """Thank you very much for your interest in Conversation Analyzer. If you'd like to learn more please visit https://www.newvoicemedia.com/en-us/resources/conversation-analyzer""",
+			'smart numbers': """We're happy you'd like to know more about our Smart Numbers capability. Please check out https://www.vonage.com/business/perspectives/vonage-number-programmability-leap-forward-business-communication/ to learn more.""",
+			'single pane of glass': """Thank you very much for calling us regarding our Single Pane of Glass offering. Please consult https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy to learn more about it."""
+		},
+		'de-DE': {
+			'conversation analyzer': """Danke für ihr Interesse an unserem Conversation Analyzer. Wenn sie mehr wissen möchten bitte besuchen sie unsere Produktseite unter https://www.newvoicemedia.com/en-us/resources/conversation-analyzer""",
+			'smart numbers': """ Wir freuen uns, dass sie mehr über Smart Numbers lernen möchten. Bitte schauen sie auf https://www.vonage.com/business/perspectives/vonage-number-programmability-leap-forward-business-communication/ um mehr zu erfahren""",
+			'single pane of glass': """Danke für ihren Anruf im Hinblick auf unser Single Pane of Glass Angebot. Bitte besuchen sie https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy um mehr über dieses Produkt zu lernen."""
+		}
 	}
 
 	def post(self):
 		app.logger.debug('In NexmoWhatsAppSendMessageProduct.post')
 		pprint(request.get_json())
 		req = OverAiRequest(request.get_json())
+		product = request.get_parameter('PRODUCT').lower()
+		language = request.get_language()
+
+		print('Trying to find message text for ', product, ' in language ', language)
 
 		try: 
-			whatsapp_message = self.messages[req.get_parameter('PRODUCT')]
-			app.logger.info('Found Whatsapp Message text for %s' % req.get_parameter('PRODUCT'))
+			whatsapp_message = self.messages[language][product]
+			print('Found message text')
 		except KeyError:
-			whatsapp_message = 'Error, no such product found'
+			print('No message text found')
+			whatsapp_message = 'Error, no such product or language found'
 
 		nexmo_con = NexmoWhatsAppConnection()
 		nexmo_con.send_message(
@@ -536,9 +536,11 @@ class SF_AIContext (Resource):
 	def post(self):
 		req = OverAiRequest(request.get_json())
 
+		pprint(req)
+
 		ai_context = req.get_parameter('AI_CONTEXT')
 		# app.logger.warning('SF_AIContext.post for %s with context %s' % (req.caller_id, ai_context))
-		print('Setting context: %s', ai_context)
+		print('Setting context ', ai_context)
 
 		# pprint(req)
 
