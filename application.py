@@ -433,7 +433,10 @@ class SF_Order (Resource):
 		req = OverAiRequest(request.get_json())
 
 		con = SFConnection()
+		timer_start_sf = timer()
 		con.authenticate()
+		timer_end_sf = timer()
+		print('SF_Order.post SF uthentication took ', timer_end_sf-timer_start_sf, ' secs')
 
 		caller_id = req.caller_id
 
@@ -441,10 +444,13 @@ class SF_Order (Resource):
 
 		app.logger.info('Received request for order number %s', order_number)
 
+		timer_start_sf = timer()
 		if order_number:
 			last_order = con.get_order_by_number(caller_id, order_number)
 		else:
 			last_order = con.get_last_order_by_phone(caller_id)
+		timer_end_sf = timer()
+		print('SF_Order.post get order from SF took ', timer_end_sf-timer_start_sf, ' secs')
 
 		# pprint(last_order)
 
