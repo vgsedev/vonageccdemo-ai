@@ -64,6 +64,7 @@ class NexmoWhatsAppConnection (object):
 		return contact['Whatsapp_MTM_required__c']
 
 	def send_message(self, to_phone, message):
+		print('In NexmoWhatsAppConnection.send_message with phone %s', to_phone)
 		if self.mtm_required(to_phone):
 			app.logger.info('MTM required for %s', to_phone)
 			self.send_mtm_message(to_phone, message)
@@ -151,7 +152,7 @@ class NexmoWhatsAppConnection (object):
 		app.logger.debug('In receive_answer')
 		print('In receive_answer for whatsapp')
 
-		pprint(req)
+		# pprint(req)
 
 		# If we receive an answer from a client, we check if there are any pending messages.
 		from_phone = req['from']['number']
@@ -171,7 +172,7 @@ class NexmoWhatsAppConnection (object):
 	def receive_status(self, req):
 		app.logger.debug('in receive_status')
 		print('In receive status for whatsapp')
-		pprint(req)
+		# pprint(req)
 
 		"""
 		if req['status'] == 'delivered':
@@ -189,7 +190,8 @@ class NexmoWhatsAppConnection (object):
 class NexmoWhatsAppSendMessageOrder (Resource):
 
 	def post(self):
-		app.logger.debug('In NexmoWhatsAppSendMessageOrder.post')
+		# app.logger.debug('In NexmoWhatsAppSendMessageOrder.post')
+		print('In NexmoWhatsAppSendMessageOrder.post')
 		pprint(request.get_json())
 		req = OverAiRequest(request.get_json())
 		nexmo_con = NexmoWhatsAppConnection()
