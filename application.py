@@ -220,8 +220,8 @@ class NexmoWhatsAppSendMessageProduct (Resource):
 		app.logger.debug('In NexmoWhatsAppSendMessageProduct.post')
 		pprint(request.get_json())
 		req = OverAiRequest(request.get_json())
-		product = request.get_parameter('PRODUCT').lower()
-		language = request.get_language()
+		product = req.get_parameter('PRODUCT').lower()
+		language = req.get_language()
 
 		print('Trying to find message text for ', product, ' in language ', language)
 
