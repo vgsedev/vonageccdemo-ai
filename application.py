@@ -537,7 +537,8 @@ class SF_AIContext (Resource):
 		req = OverAiRequest(request.get_json())
 
 		ai_context = req.get_parameter('AI_CONTEXT')
-		app.logger.warning('SF_AIContext.post for %s with context %s' % (req.caller_id, ai_context))
+		# app.logger.warning('SF_AIContext.post for %s with context %s' % (req.caller_id, ai_context))
+		print('Setting context: %s', ai_context)
 
 		# pprint(req)
 
