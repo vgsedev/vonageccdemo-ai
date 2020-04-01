@@ -8,6 +8,7 @@ from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
 from threading import Lock
 from collections import deque
+from timeit import default_timer as timer
 
 class MessageStorage (object):
 	def __init__(self):
@@ -190,6 +191,7 @@ class NexmoWhatsAppConnection (object):
 class NexmoWhatsAppSendMessageOrder (Resource):
 
 	def post(self):
+		timer_start = timer()
 		# app.logger.debug('In NexmoWhatsAppSendMessageOrder.post')
 		print('In NexmoWhatsAppSendMessageOrder.post')
 		pprint(request.get_json())
@@ -198,6 +200,8 @@ class NexmoWhatsAppSendMessageOrder (Resource):
 		nexmo_con.send_message(
 			req.get_parameter('WHATSAPP_RECIPIENT'), 
 			req.get_parameter('WHATSAPP_MSG'))
+		timer_end = timer()
+		print('NexmoWhatsAppSendMessageOrder took ', timer_end-timer_start, ' secs')
 		return jsonify({"ForceIntent": {"IntentName": "end_call"}})
 		# return jsonify({'Result': {'IntroSpeakOut': 'Ok, the Whatsapp message is on its way to you.'}})
 
@@ -212,7 +216,8 @@ class NexmoWhatsAppSendMessageProduct (Resource):
 		'de-DE': {
 			'conversation analyzer': """Danke für ihr Interesse an unserem Conversation Analyzer. Wenn sie mehr wissen möchten bitte besuchen sie unsere Produktseite unter https://www.newvoicemedia.com/en-us/resources/conversation-analyzer""",
 			'smart numbers': """ Wir freuen uns, dass sie mehr über Smart Numbers lernen möchten. Bitte schauen sie auf https://www.vonage.com/business/perspectives/vonage-number-programmability-leap-forward-business-communication/ um mehr zu erfahren""",
-			'single pane of glass': """Danke für ihren Anruf im Hinblick auf unser Single Pane of Glass Angebot. Bitte besuchen sie https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy um mehr über dieses Produkt zu lernen."""
+			'single pane of glass': """Danke für ihren Anruf im Hinblick auf unser Single Pane of Glass Angebot. Bitte besuchen sie https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy um mehr über dieses Produkt zu lernen.""",
+			'single pain of glass': """Danke für ihren Anruf im Hinblick auf unser Single Pane of Glass Angebot. Bitte besuchen sie https://www.vonage.com/business/unified-communications/business-phone-system-features/?icmp=BMM_D_products_unifiedcommunic_businessphonesy um mehr über dieses Produkt zu lernen."""
 		}
 	}
 
@@ -423,6 +428,8 @@ class SF_Order (Resource):
 		# pprint(vars(request))
 		# print(request.json)
 
+		timer_start = timer()
+
 		req = OverAiRequest(request.get_json())
 
 		con = SFConnection()
@@ -464,6 +471,9 @@ class SF_Order (Resource):
 
 			# pprint(overai_response)
 
+			timer_end = timer()
+			print('SF_Order.post took ', timer_end-timer_start, ' secs')
+
 			return jsonify(overai_response)
 		else:
 			app.logger.warning('Could not find order for number %s', order_number)
@@ -478,11 +488,15 @@ class SF_Order (Resource):
 			#	 'Value': '',
 			# 	 'Type': '@sys.number'}
 			# ]
+			timer_end = timer()
+			print('SF_Order.post took ', timer_end-timer_start, ' secs')
 			return jsonify(overai_response)
 		
 
 class SF_Contact (Resource):
 	def post(self):
+
+		timer_start = timer()
 		req = OverAiRequest(request.get_json())
 
 		pprint(req)
@@ -529,11 +543,14 @@ class SF_Contact (Resource):
 
 		# pprint(overai_response)
 
+		timer_end = timer()
+		print('SF_Contact.post took ', timer_end-timer_start, ' secs')
 
 		return jsonify(overai_response)
 
 class SF_AIContext (Resource):
 	def post(self):
+		timer_start = timer()
 		req = OverAiRequest(request.get_json())
 
 		pprint(req)
@@ -552,6 +569,9 @@ class SF_AIContext (Resource):
 		contact_id = contacts['records'][0]['Id']
 		con.update_contact_for_ai_context(contact_id, ai_context)
 		# Always route after updating the context. The context will be displayed in ContactPad
+
+		timer_end = timer()
+		print('SF_AIContext.post took ', timer_end-timer_start, ' secs')
 		return jsonify({'ForceIntent': {'IntentName': 'route_call'}})
 
 application = app = Flask(__name__)
