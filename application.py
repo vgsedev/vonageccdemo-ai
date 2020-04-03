@@ -368,7 +368,9 @@ class SFConnection (object):
 			LastName,
 			OtherPhone,
 			Last_Whatsapp_MTM__c,
-			Whatsapp_MTM_required__c
+			Whatsapp_MTM_required__c,
+			Outstanding_Amount__c,
+			Currency_Text_To_Speech__c
 			from contact
 			where (phone like '%%%s' 
 				or homephone = '%%%s'
@@ -421,6 +423,9 @@ class OverAiRequest (object):
 
 	def get_language(self):
 		return self.webhook_request['Language']
+
+	def get_intent_name(self):
+		return self.webhook_request['Intent']['Name']
 
 class SF_Order (Resource):
 
@@ -537,18 +542,38 @@ class SF_Contact (Resource):
 				 'Value': contact['Name']},
 				{'Name': 'CONTACT_WHATSAPP',
 				 'Type': '@sys.phone-number',
-				 'Value': contact['OtherPhone']}
+				 'Value': contact['OtherPhone']},
+				{'Name': 'CONTACT_OUTSTANDING_AMOUNT',
+				 'Type': '@sys.number',
+				 'Value': contact['Outstanding_Amount__c']},
+				{'Name': 'CONTACT_CURRENCY',
+				 'Type': '@sys.any',
+				 'Value': contact['Currency_Text_To_Speech__c']}
 			]
-			if req.get_language() == 'de-DE':
-				app.logger.warning('German Language detected')
-				overai_response['Result'] = {
-					'IntroSpeakOut': """Willkommen zurück %s. Geht es um ihre letzte Bestellung? Oder eine ältere Bestellung?""" % (contact['FirstName'], )
-				}
-			else:	
-				app.logger.warning('Requested Language is %s', (req.get_language()))
-				overai_response['Result'] = {
-					'IntroSpeakOut': """Welcome back %s. Is this about your most recent order? Or an earlier order?""" % (contact['FirstName'], )
-				}
+			if req.get_intent_name() == 'order_help':
+				if req.get_language() == 'de-DE':
+					print('German Language detected')
+					overai_response['Result'] = {
+						'IntroSpeakOut': """Willkommen zurück %s. Geht es um ihre letzte Bestellung? Oder eine ältere Bestellung?""" % (contact['FirstName'], )
+					}
+				else:	
+					print('Requested Language is %s', (req.get_language()))
+					overai_response['Result'] = {
+						'IntroSpeakOut': """Welcome back %s. Is this about your most recent order? Or an earlier order?""" % (contact['FirstName'], )
+					}
+			elif req.get_intent_name() == 'billing':
+				if req.get_language() == 'de-DE':
+					print('German language detected')
+					overai_response['Result'] = {
+						'IntroSpeakOut': """Willkommen zurück %s. Wir sehen, dass es einen ausstehenden Betrag von %s %s gibt. Möchten sie diesen nun begleichen?""" 
+							% (contact['FirstName'], contact['Outstanding_Amount__c'], contact['Currency_Text_To_Speech__c'])
+					}
+				else:
+					print('Requested language is ', req.get_language())
+					overai_response['Result'] = {
+						'IntroSpeakOut': """Welcome back %s. We see that you have an outstanding amount of %s %s. Would you like pay this now?"""
+							% (contact['FirstName'], contact['Outstanding_Amount__c'], contact['Currency_Text_To_Speech__c'])
+					}
 
 		# pprint(overai_response)
 
