@@ -550,6 +550,7 @@ class SF_Contact (Resource):
 				 'Type': '@sys.any',
 				 'Value': contact['Currency_Text_To_Speech__c']}
 			]
+			print('Contact request for intent', req.get_intent_name())
 			if req.get_intent_name() == 'order_help':
 				if req.get_language() == 'de-DE':
 					print('German Language detected')
@@ -557,7 +558,7 @@ class SF_Contact (Resource):
 						'IntroSpeakOut': """Willkommen zurück %s. Geht es um ihre letzte Bestellung? Oder eine ältere Bestellung?""" % (contact['FirstName'], )
 					}
 				else:	
-					print('Requested Language is %s', (req.get_language()))
+					print('Requested Language is ', req.get_language())
 					overai_response['Result'] = {
 						'IntroSpeakOut': """Welcome back %s. Is this about your most recent order? Or an earlier order?""" % (contact['FirstName'], )
 					}
