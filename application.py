@@ -563,18 +563,12 @@ class SF_Contact (Resource):
 						'IntroSpeakOut': """Welcome back %s. Is this about your most recent order? Or an earlier order?""" % (contact['FirstName'], )
 					}
 			elif req.get_intent_name() == 'billing':
-				if req.get_language() == 'de-DE':
-					print('German language detected')
-					overai_response['Result'] = {
-						'IntroSpeakOut': """Willkommen zurück %s. Wir sehen, dass es einen ausstehenden Betrag von %s %s gibt. Möchten sie diesen nun begleichen?""" 
-							% (contact['FirstName'], contact['Outstanding_Amount__c'], contact['Currency_Text_To_Speech__c'])
-					}
+				outstanding_amount = contact['Outstanding_Amount__c']
+				print('Request for outstanding amount yielded %s' % outstanding_amount)
+				if outstanding_amount > 0:
+					overai_response['ForceIntent'] = {'IntentName': 'billing_confirm_payment'}
 				else:
-					print('Requested language is ', req.get_language())
-					overai_response['Result'] = {
-						'IntroSpeakOut': """Welcome back %s. We see that you have an outstanding amount of %s %s. Would you like pay this now?"""
-							% (contact['FirstName'], contact['Outstanding_Amount__c'], contact['Currency_Text_To_Speech__c'])
-					}
+					overai_response['ForceIntent'] = {'IntentName': 'billing_confirm_route'}
 
 		# pprint(overai_response)
 
