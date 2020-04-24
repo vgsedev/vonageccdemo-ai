@@ -569,6 +569,14 @@ class SF_Contact (Resource):
 					overai_response['ForceIntent'] = {'IntentName': 'billing_confirm_payment'}
 				else:
 					overai_response['ForceIntent'] = {'IntentName': 'billing_confirm_route'}
+			elif req.get_intent_name() == 'billing_route_call_pci':
+				outstanding_amount = contact['Outstanding_Amount__c']
+				print('Get Contact Info after PCI. Outstanding amount is %s' % outstanding_amount)
+				if outstanding_amount > 0:
+					overai_response['ForceIntent'] = {'IntentName': 'billing_payment_ok'}
+				else:
+					overai_response['ForceIntent'] = {'IntentName': 'billing_payment_not_ok'}
+
 
 		# pprint(overai_response)
 
